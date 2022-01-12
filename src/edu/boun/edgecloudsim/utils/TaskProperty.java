@@ -143,10 +143,13 @@ public class TaskProperty {
 
 	@Override
 	public String toString() {
-		return "TaskProperty [mobileDeviceId=" + mobileDeviceId + ", direction=" + direction + ", velocity=" + velocity
-				+ ", neededBandwidth=" + neededBandwidth + ", neededCPU=" + neededCPU + ", neededRam=" + neededRam
-				+ ", neededStorage=" + neededStorage + "]";
+		return "TaskProperty [pesNumber=" + pesNumber + ", mobileDeviceId=" + mobileDeviceId + ", vmUtilizationOnEdge="
+				+ vmUtilizationOnEdge + ", vmUtilizationOnCloud=" + vmUtilizationOnCloud + ", direction=" + direction
+				+ ", velocity=" + velocity + ", neededBandwidth=" + neededBandwidth + ", neededCPU=" + neededCPU
+				+ ", neededRam=" + neededRam + ", neededStorage=" + neededStorage + "]";
 	}
+
+	
 
 	
 	
