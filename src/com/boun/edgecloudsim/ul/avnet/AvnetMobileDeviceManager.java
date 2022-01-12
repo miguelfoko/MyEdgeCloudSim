@@ -175,6 +175,27 @@ public class AvnetMobileDeviceManager extends MobileDeviceManager {
 				(int)task.getCloudletFileSize(),
 				(int)task.getCloudletOutputSize());
 
+		//The tasks submitted by a mobile device (AV) should exclusively be received by the Edge Server
+		int nextHopId = SimSettings.GENERIC_EDGE_DEVICE_ID;
+		
+		double WlanDelay = networkModel.getUploadDelay(task.getMobileDeviceId(), nextHopId, task);
+
+		if(WlanDelay > 0){
+			networkModel.uploadStarted(currentLocation, nextHopId);
+			schedule(getId(), WlanDelay, REQUEST_RECEIVED_BY_EDGE_DEVICE, task);
+			AvnetSimLogger.getInstance().taskStarted(task.getCloudletId(), CloudSim.clock());
+			AvnetSimLogger.getInstance().setUploadDelay(task.getCloudletId(), WlanDelay, NETWORK_DELAY_TYPES.WLAN_DELAY);
+			//AvnetSimLogger.printLine("Tast submited to edgeServer");
+		}
+		else {
+			AvnetSimLogger.getInstance().rejectedDueToBandwidth(
+					task.getCloudletId(),
+					CloudSim.clock(),
+					SimSettings.VM_TYPES.EDGE_VM.ordinal(),
+					NETWORK_DELAY_TYPES.WLAN_DELAY);
+			//AvnetSimLogger.printLine("No Tast submited to edgeServer");
+		}
+	/*
 		int nextHopId = AvnetCoreSimulation.getInstance().getEdgeOrchestrator().getDeviceToOffload(task);
 
 		if(nextHopId == SimSettings.CLOUD_DATACENTER_ID){
@@ -217,6 +238,7 @@ public class AvnetMobileDeviceManager extends MobileDeviceManager {
 			AvnetSimLogger.printLine("Unknown nextHopId! Terminating simulation...");
 			System.exit(1);
 		}
+	*/
 	}
 
 	private void submitTaskToVm(Task task, double delay, int datacenterId) {
