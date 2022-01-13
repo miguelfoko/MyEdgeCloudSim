@@ -4,7 +4,7 @@
  *  model. Users of EdgeCloudSim can incorporate their own network behavior
  *   models by extending abstract NetworkModel class.*/
 
-package com.boun.edgecloudsim.ul.avnet;
+package com.edgecloudsim.ul.avnet;
 
 import java.text.DecimalFormat;
 
@@ -62,26 +62,22 @@ public class AvnetNetwork extends NetworkModel {
 	}
 
 	/**
-	 * source device is always mobile device in our simulation scenarios!
+	 * source device may be mobile device(AVs) or MEC servers  in our simulation scenarios!
 	 */
 	@Override
 	public double getUploadDelay(int sourceDeviceId, int destDeviceId, Task task) {
 		double delay = 0;
 		Location accessPointLocation = AvnetCoreSimulation.getInstance().getMobilityModel().getLocation(sourceDeviceId,CloudSim.clock());
 
-		//mobile device to cloud server
+		//Edge Servr to cloud server (WAN)
 		if(destDeviceId == SimSettings.CLOUD_DATACENTER_ID){
-			double wlanDelay = getWlanUploadDelay(accessPointLocation, CloudSim.clock());
-			double wanDelay = getWanUploadDelay(accessPointLocation, CloudSim.clock() + wlanDelay);
-			if(wlanDelay > 0 && wanDelay >0)
-				delay = wlanDelay + wanDelay;
+			delay = getWanUploadDelay(accessPointLocation, CloudSim.clock());
 		}
-		//mobile device to edge orchestrator
+		//Edge Server to Edge Server(MAN)
 		else if(destDeviceId == SimSettings.EDGE_ORCHESTRATOR_ID){
-			delay = getWlanUploadDelay(accessPointLocation, CloudSim.clock()) +
-					SimSettings.getInstance().getInternalLanDelay();
+			delay = getManUploadDelay(accessPointLocation, CloudSim.clock());
 		}
-		//mobile device to edge device (wifi access point)
+		//mobile device to edge device (wifi access point)	(WLAN)
 		else if (destDeviceId == SimSettings.GENERIC_EDGE_DEVICE_ID) {
 			delay = getWlanUploadDelay(accessPointLocation, CloudSim.clock());
 		}
@@ -90,45 +86,51 @@ public class AvnetNetwork extends NetworkModel {
 	}
 
 	/**
-	 * destination device is always mobile device in our simulation scenarios!
+	 * destination device may be Mobile device (AVs) or MEC servers in our simulation scenarios!
 	 */
 	@Override
 	public double getDownloadDelay(int sourceDeviceId, int destDeviceId, Task task) {
-		//Special Case -> edge orchestrator to edge device
-				if(sourceDeviceId == SimSettings.EDGE_ORCHESTRATOR_ID &&
-						destDeviceId == SimSettings.GENERIC_EDGE_DEVICE_ID){
-					return SimSettings.getInstance().getInternalLanDelay();
-				}
+		//Special Case -> edge orchestrator to edge device (that is MEC server to MEC server) or vice-versa
+		if((sourceDeviceId == SimSettings.EDGE_ORCHESTRATOR_ID &&
+				destDeviceId == SimSettings.GENERIC_EDGE_DEVICE_ID)|| (sourceDeviceId == SimSettings.GENERIC_EDGE_DEVICE_ID &&
+				destDeviceId == SimSettings.EDGE_ORCHESTRATOR_ID)){
+			return SimSettings.getInstance().getMAN_PROPAGATION_DELAY();
+		}
+		//Cloud Server to MEC server
+		if(sourceDeviceId == SimSettings.CLOUD_DATACENTER_ID &&
+				destDeviceId == SimSettings.EDGE_ORCHESTRATOR_ID){
+			return SimSettings.getInstance().getWAN_PROPAGATION_DELAY();
+		}
 
-				double delay = 0;
-				Location accessPointLocation = AvnetCoreSimulation.getInstance().getMobilityModel().getLocation(destDeviceId,CloudSim.clock());
+		double delay = 0;
+		Location accessPointLocation = AvnetCoreSimulation.getInstance().getMobilityModel().getLocation(destDeviceId,CloudSim.clock());
 
-				//cloud server to mobile device
-				if(sourceDeviceId == SimSettings.CLOUD_DATACENTER_ID){
-					double wlanDelay = getWlanDownloadDelay(accessPointLocation, CloudSim.clock());
-					double wanDelay = getWanDownloadDelay(accessPointLocation, CloudSim.clock() + wlanDelay);
-					if(wlanDelay > 0 && wanDelay >0)
-						delay = wlanDelay + wanDelay;
-				}
-				//edge device (wifi access point) to mobile device
-				else{
-					delay = getWlanDownloadDelay(accessPointLocation, CloudSim.clock());
+		//				//edge device (server) to edge orchestrator
+		//				if(sourceDeviceId == SimSettings.GENERIC_EDGE_DEVICE_ID){
+		//					double wlanDelay = getWlanDownloadDelay(accessPointLocation, CloudSim.clock());
+		//					double wanDelay = getWanDownloadDelay(accessPointLocation, CloudSim.clock() + wlanDelay);
+		//					if(wlanDelay > 0 && wanDelay >0)
+		//						delay = wlanDelay + wanDelay;
+		//				}
+		//edge device (wifi access point) to mobile device
+		//				else{
+		delay = getWlanDownloadDelay(accessPointLocation, CloudSim.clock());
 
-					EdgeHost host = (EdgeHost)(AvnetCoreSimulation.
-							getInstance().
-							getEdgeServerManager().
-							getDatacenterList().get(sourceDeviceId).
-							getHostList().get(0));
+		EdgeHost host = (EdgeHost)(AvnetCoreSimulation.
+				getInstance().
+				getEdgeServerManager().
+				getDatacenterList().get(sourceDeviceId).
+				getHostList().get(0));
 
-					//if source device id is the edge server which is located in another location, add internal lan delay
-					//in our scenario, serving wlan ID is equal to the host id, because there is only one host in one place
-					if(host.getLocation().getServingWlanId() != accessPointLocation.getServingWlanId())
-						delay += (SimSettings.getInstance().getInternalLanDelay() * 2);
-				}
+		//if source device id is the edge server which is located in another location, add internal lan delay
+		//in our scenario, serving wlan ID is equal to the host id, because there is only one host in one place
+		if(host.getLocation().getServingWlanId() != accessPointLocation.getServingWlanId())
+			delay += (SimSettings.getInstance().getInternalLanDelay() * 2);
+		//				}
 
-				return delay;
+		return delay;
 	}
-	
+
 	public int getMaxNumOfClientsInPlace(){
 		return maxNumOfClientsInPlace;
 	}
@@ -148,7 +150,7 @@ public class AvnetNetwork extends NetworkModel {
 
 		return deviceCount;
 	}
-	
+
 	private double calculateMM1(double propagationDelay, int bandwidth /*Kbps*/, double PoissonMean, double avgTaskSize /*KB*/, int deviceCount){
 		double Bps=0, mu=0, lamda=0;
 
@@ -163,7 +165,7 @@ public class AvnetNetwork extends NetworkModel {
 
 		return (result > 5) ? -1 : result;
 	}
-	
+
 	//Computation of T_Hand(Response time)
 	public double meanHandlingLatency(double mu) {
 		double ret=1/(mu*(1-beta));
@@ -174,28 +176,25 @@ public class AvnetNetwork extends NetworkModel {
 	//Computation of T_Tail (Waiting time)
 	public double tailLatency(double mu) {	
 		double ret=beta/(mu*(1-beta));
-//		return new Double(new DecimalFormat("##.####").format(ret));
+		//		return new Double(new DecimalFormat("##.####").format(ret));
 		return ret;
 	}
-	
+
 	/*We compute the propagation delay (T_Total_FW) with the formula of Eq.29 (SliceCal)
 	 * serviceLatency is the WAN  propagation delay while internalLatency is the WLAN propagation delay
 	 * numOfResourceBlock is the number of VM available for an Edge server
 	 */
-	
+
 	private double computeTotalLatency(double serviceLatency, double internalLatency, double numOfResourceBlock) {
 		double t_hand=meanHandlingLatency(numOfResourceBlock);
 		double t_tail=tailLatency(numOfResourceBlock);
 		double tTotalFw=serviceLatency+internalLatency+t_hand+t_tail;
-//		AvnetSimLogger.printLine("  T_Total_FW= "+tTotalFw+"; T_Hand= "+t_hand
-//				+ "; T_Tail= "+t_tail+"; CB_i= "+numOfResourceBlock+" Beta= "+beta);
-//		return new Double(new DecimalFormat("##.####").format(tTotalFw)); 
+		//		AvnetSimLogger.printLine("  T_Total_FW= "+tTotalFw+"; T_Hand= "+t_hand
+		//				+ "; T_Tail= "+t_tail+"; CB_i= "+numOfResourceBlock+" Beta= "+beta);
+		//		return new Double(new DecimalFormat("##.####").format(tTotalFw)); 
 		return tTotalFw;
 	}
 	private double getWlanDownloadDelay(Location accessPointLocation, double time) {
-//		double propagationDelay=computeTotalLatency(SimSettings.getInstance().getWanPropagationDelay(), 
-//				SimSettings.getInstance().getInternalLanDelay(), 
-//				SimSettings.getInstance().getNumOfEdgeVMs());
 		double propagationDelay=0;
 		return calculateMM1(
 				propagationDelay,
@@ -206,9 +205,7 @@ public class AvnetNetwork extends NetworkModel {
 	}
 
 	private double getWlanUploadDelay(Location accessPointLocation, double time) {
-//		double propagationDelay=computeTotalLatency(SimSettings.getInstance().getWanPropagationDelay(), 
-//				SimSettings.getInstance().getInternalLanDelay(), 
-//				SimSettings.getInstance().getNumOfEdgeVMs());
+
 		double propagationDelay=0;
 		return calculateMM1(propagationDelay,
 				SimSettings.getInstance().getWlanBandwidth(),
@@ -218,10 +215,7 @@ public class AvnetNetwork extends NetworkModel {
 	}
 
 	private double getWanDownloadDelay(Location accessPointLocation, double time) {
-		double propagationDelay=computeTotalLatency(0,//SimSettings.getInstance().getWanPropagationDelay(), 
-				0, 
-				SimSettings.getInstance().getNumOfEdgeVMs());
-//		double propagationDelay=SimSettings.getInstance().getWanPropagationDelay();
+		double propagationDelay=SimSettings.getInstance().getWanPropagationDelay();
 		return calculateMM1(propagationDelay,
 				SimSettings.getInstance().getWanBandwidth(),
 				WanPoissonMean,
@@ -230,12 +224,18 @@ public class AvnetNetwork extends NetworkModel {
 	}
 
 	private double getWanUploadDelay(Location accessPointLocation, double time) {
-		double propagationDelay=computeTotalLatency(0,//SimSettings.getInstance().getWanPropagationDelay(), 
-				0, 
-				SimSettings.getInstance().getNumOfEdgeVMs());
-//		double propagationDelay=SimSettings.getInstance().getWanPropagationDelay();
+		double propagationDelay=SimSettings.getInstance().getWanPropagationDelay();
 		return calculateMM1(propagationDelay,
 				SimSettings.getInstance().getWanBandwidth(),
+				WanPoissonMean,
+				avgTaskInputSize,
+				getDeviceCount(accessPointLocation, time));
+	}
+
+	private double getManUploadDelay(Location accessPointLocation, double time) {
+		double propagationDelay=SimSettings.getInstance().getMAN_PROPAGATION_DELAY();
+		return calculateMM1(propagationDelay,
+				SimSettings.getInstance().getManBandwidth(),
 				WanPoissonMean,
 				avgTaskInputSize,
 				getDeviceCount(accessPointLocation, time));

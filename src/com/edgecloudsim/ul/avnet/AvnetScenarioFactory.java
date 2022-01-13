@@ -1,4 +1,4 @@
-package com.boun.edgecloudsim.ul.avnet;
+package com.edgecloudsim.ul.avnet;
 
 import edu.boun.edgecloudsim.cloud_server.CloudServerManager;
 import edu.boun.edgecloudsim.core.ScenarioFactory;

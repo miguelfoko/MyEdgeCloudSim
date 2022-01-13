@@ -1,4 +1,4 @@
-package com.boun.edgecloudsim.ul.avnet;
+package com.edgecloudsim.ul.avnet;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

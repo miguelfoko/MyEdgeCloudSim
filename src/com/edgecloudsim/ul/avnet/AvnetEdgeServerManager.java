@@ -1,4 +1,4 @@
-package com.boun.edgecloudsim.ul.avnet;
+package com.edgecloudsim.ul.avnet;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -23,6 +23,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.boun.edgecloudsim.core.SimSettings;
+import edu.boun.edgecloudsim.edge_client.Task;
 import edu.boun.edgecloudsim.edge_server.EdgeHost;
 import edu.boun.edgecloudsim.edge_server.EdgeServerManager;
 import edu.boun.edgecloudsim.edge_server.EdgeVM;
@@ -32,6 +33,12 @@ import edu.boun.edgecloudsim.utils.TaskProperty;
 
 public class AvnetEdgeServerManager extends EdgeServerManager {
 	private int hostIdCounter;
+	//for our implementation
+	private List<Task> listOfTasks;
+	private double computingResources;
+	private double storingResources;
+	private double theta;//computing ressource needed my the mec server for internal processing
+	private double lambda;//computing ressource needed my the mec server for internal processing
 
 	public AvnetEdgeServerManager() {
 		hostIdCounter = 0;

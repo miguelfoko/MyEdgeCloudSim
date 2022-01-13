@@ -1,4 +1,4 @@
-package com.boun.edgecloudsim.ul.avnet;
+package com.edgecloudsim.ul.avnet;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,8 +10,7 @@ import java.util.Map;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
-import com.boun.edgecloudsim.ul.avnet.AvnetSimLogger.NETWORK_ERRORS;
-
+import com.edgecloudsim.ul.avnet.AvnetSimLogger.NETWORK_ERRORS;
 
 import edu.boun.edgecloudsim.core.SimSettings;
 import edu.boun.edgecloudsim.core.SimSettings.NETWORK_DELAY_TYPES;

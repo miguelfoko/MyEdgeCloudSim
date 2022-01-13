@@ -97,13 +97,19 @@ public class SimSettings {
 	private int MAX_TASK_RAM_NEEDED;
 	private int MIN_TASK_STORAGE_NEEDED;
 	private int MAX_TASK_STORAGE_NEEDED;
+	
+	private int THETA;
+	private int LAMBDA;
 
 	private double WAN_PROPAGATION_DELAY; //seconds unit in properties file
+	private double MAN_PROPAGATION_DELAY; //seconds unit in properties file
+	private double WLAN_PROPAGATION_DELAY; //seconds unit in properties file
 	private double GSM_PROPAGATION_DELAY; //seconds unit in properties file
 	private double LAN_INTERNAL_DELAY; //seconds unit in properties file
 	private int BANDWITH_WLAN; //Mbps unit in properties file
 	private int BANDWITH_MAN; //Mbps unit in properties file
 	private int BANDWITH_WAN; //Mbps unit in properties file
+	private int BANDWITH_LAN; //Mbps unit in properties file
 	private int BANDWITH_GSM; //Mbps unit in properties file
 
 	private int NUM_OF_HOST_ON_CLOUD_DATACENTER;
@@ -187,11 +193,14 @@ public class SimSettings {
 			WLAN_RANGE = Integer.parseInt(prop.getProperty("wlan_range", "0"));
 
 			WAN_PROPAGATION_DELAY = Double.parseDouble(prop.getProperty("wan_propagation_delay", "0"));
+			MAN_PROPAGATION_DELAY = Double.parseDouble(prop.getProperty("man_propagation_delay", "0"));
+			WLAN_PROPAGATION_DELAY = Double.parseDouble(prop.getProperty("wlan_propagation_delay", "0"));
 			GSM_PROPAGATION_DELAY = Double.parseDouble(prop.getProperty("gsm_propagation_delay", "0"));
 			LAN_INTERNAL_DELAY = Double.parseDouble(prop.getProperty("lan_internal_delay", "0"));
 			BANDWITH_WLAN = 1000 * Integer.parseInt(prop.getProperty("wlan_bandwidth"));
 			BANDWITH_MAN = 1000 * Integer.parseInt(prop.getProperty("man_bandwidth", "0"));
 			BANDWITH_WAN = 1000 * Integer.parseInt(prop.getProperty("wan_bandwidth", "0"));
+			BANDWITH_LAN = 1000 * Integer.parseInt(prop.getProperty("lan_bandwidth", "0"));
 			BANDWITH_GSM =  1000 * Integer.parseInt(prop.getProperty("gsm_bandwidth", "0"));
 
 			NUM_OF_HOST_ON_CLOUD_DATACENTER = Integer.parseInt(prop.getProperty("number_of_host_on_cloud_datacenter"));
@@ -220,6 +229,9 @@ public class SimSettings {
 			MAX_TASK_RAM_NEEDED=Integer.parseInt(prop.getProperty("max_task_ram_needed"));
 			MIN_TASK_STORAGE_NEEDED=Integer.parseInt(prop.getProperty("min_task_storage_needed"));
 			MAX_TASK_STORAGE_NEEDED=Integer.parseInt(prop.getProperty("max_task_storage_needed"));
+			
+			THETA=Integer.parseInt(prop.getProperty("theta"));
+			LAMBDA=Integer.parseInt(prop.getProperty("lambda"));
 			
 			RAM_FOR_VM = Integer.parseInt(prop.getProperty("ram_for_mobile_vm"));
 			CORE_FOR_VM = Integer.parseInt(prop.getProperty("core_for_mobile_vm"));
@@ -633,6 +645,50 @@ public class SimSettings {
 
 	public int getMAX_TASK_STORAGE_NEEDED() {
 		return MAX_TASK_STORAGE_NEEDED;
+	}
+
+	public double getWAN_PROPAGATION_DELAY() {
+		return WAN_PROPAGATION_DELAY;
+	}
+
+	public double getMAN_PROPAGATION_DELAY() {
+		return MAN_PROPAGATION_DELAY;
+	}
+
+	public double getWLAN_PROPAGATION_DELAY() {
+		return WLAN_PROPAGATION_DELAY;
+	}
+
+	public double getGSM_PROPAGATION_DELAY() {
+		return GSM_PROPAGATION_DELAY;
+	}
+
+	public int getBANDWITH_WLAN() {
+		return BANDWITH_WLAN;
+	}
+
+	public int getBANDWITH_MAN() {
+		return BANDWITH_MAN;
+	}
+
+	public int getBANDWITH_WAN() {
+		return BANDWITH_WAN;
+	}
+
+	public int getBANDWITH_LAN() {
+		return BANDWITH_LAN;
+	}
+
+	public int getBANDWITH_GSM() {
+		return BANDWITH_GSM;
+	}
+
+	public int getTHETA() {
+		return THETA;
+	}
+
+	public int getLAMBDA() {
+		return LAMBDA;
 	}
 
 	/**

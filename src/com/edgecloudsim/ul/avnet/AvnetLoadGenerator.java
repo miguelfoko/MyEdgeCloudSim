@@ -4,7 +4,7 @@
  * generation patterns are required, abstract LoadGeneratorModel class 
  * should be extended*/
 
-package com.boun.edgecloudsim.ul.avnet;
+package com.edgecloudsim.ul.avnet;
 
 import java.util.ArrayList;
 

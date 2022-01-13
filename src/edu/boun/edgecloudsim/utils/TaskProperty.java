@@ -141,6 +141,42 @@ public class TaskProperty {
 		return mobileDeviceId;
 	}
 
+	public AV_DIRECTION getDirection() {
+		return direction;
+	}
+
+	public void setDirection(AV_DIRECTION direction) {
+		this.direction = direction;
+	}
+
+	public double getDelaySensitivity() {
+		return delaySensitivity;
+	}
+
+	public int getMaxDelayRequirement() {
+		return maxDelayRequirement;
+	}
+
+	public double getVelocity() {
+		return velocity;
+	}
+
+	public int getNeededBandwidth() {
+		return neededBandwidth;
+	}
+
+	public int getNeededCPU() {
+		return neededCPU;
+	}
+
+	public int getNeededRam() {
+		return neededRam;
+	}
+
+	public int getNeededStorage() {
+		return neededStorage;
+	}
+
 	@Override
 	public String toString() {
 		return "TaskProperty [pesNumber=" + pesNumber + ", mobileDeviceId=" + mobileDeviceId + ", vmUtilizationOnEdge="

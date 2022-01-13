@@ -5,7 +5,7 @@
  *   default, but it can be changed to any format.
  */
 
-package com.boun.edgecloudsim.ul.avnet;
+package com.edgecloudsim.ul.avnet;
 
 import java.io.IOException;
 import java.util.List;

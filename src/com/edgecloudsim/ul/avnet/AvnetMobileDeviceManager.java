@@ -1,4 +1,4 @@
-package com.boun.edgecloudsim.ul.avnet;
+package com.edgecloudsim.ul.avnet;
 
 import org.cloudbus.cloudsim.UtilizationModel;
 import org.cloudbus.cloudsim.UtilizationModelFull;
@@ -9,6 +9,7 @@ import org.cloudbus.cloudsim.core.SimEvent;
 
 
 import edu.boun.edgecloudsim.core.SimSettings;
+import edu.boun.edgecloudsim.core.SimSettings.AV_DIRECTION;
 import edu.boun.edgecloudsim.core.SimSettings.NETWORK_DELAY_TYPES;
 import edu.boun.edgecloudsim.edge_client.CpuUtilizationModel_Custom;
 import edu.boun.edgecloudsim.edge_client.MobileDeviceManager;
@@ -289,8 +290,8 @@ public class AvnetMobileDeviceManager extends MobileDeviceManager {
 		Task task = new Task(edgeTask.getMobileDeviceId(), ++taskIdCounter,
 				edgeTask.getLength(), edgeTask.getPesNumber(),
 				edgeTask.getInputFileSize(), edgeTask.getOutputFileSize(),
-				utilizationModelCPU, utilizationModel, utilizationModel);
-		
+				utilizationModelCPU, utilizationModel, utilizationModel,edgeTask.getDirection(),edgeTask.getVelocity(),
+				edgeTask.getNeededBandwidth(),edgeTask.getNeededCPU(),edgeTask.getNeededRam(),edgeTask.getNeededStorage());
 		//set the owner of this task
 		task.setUserId(this.getId());
 		task.setTaskType(edgeTask.getTaskType());

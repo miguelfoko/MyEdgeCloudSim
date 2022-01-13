@@ -6,7 +6,7 @@
  * mobility model, but different mobility models can be implemented by 
  * extending abstract MobilityModel class.*/
 
-package com.boun.edgecloudsim.ul.avnet;
+package com.edgecloudsim.ul.avnet;
 
 import java.util.ArrayList;
 import java.util.List;
