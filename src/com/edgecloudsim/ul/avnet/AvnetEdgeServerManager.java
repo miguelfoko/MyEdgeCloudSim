@@ -29,16 +29,11 @@ import edu.boun.edgecloudsim.edge_server.EdgeServerManager;
 import edu.boun.edgecloudsim.edge_server.EdgeVM;
 import edu.boun.edgecloudsim.edge_server.EdgeVmAllocationPolicy_Custom;
 import edu.boun.edgecloudsim.utils.Location;
-import edu.boun.edgecloudsim.utils.TaskProperty;
+
 
 public class AvnetEdgeServerManager extends EdgeServerManager {
 	private int hostIdCounter;
-	//for our implementation
-	private List<Task> listOfTasks;
-	private double computingResources;
-	private double storingResources;
-	private double theta;//computing ressource needed my the mec server for internal processing
-	private double lambda;//computing ressource needed my the mec server for internal processing
+	
 
 	public AvnetEdgeServerManager() {
 		hostIdCounter = 0;
@@ -221,29 +216,6 @@ public class AvnetEdgeServerManager extends EdgeServerManager {
 
 		return hostList;
 	}
-	/*The MEC SDN controller that also acts as the SFC controller */
-	private void mecSDNController(TaskProperty incomingTask) {
-		
-	}
 	
-	private void mecSFCClasifier() {
-		
-	}
-	
-	private void mecVNFReceiver() {
-		
-	}
-	
-	private void mecVNFSender() {
-		
-	}
-	
-	private void mecVNFChecker() {
-		
-	}
-	
-	private void mecVNFProcessor() {
-		
-	}
 	
 }

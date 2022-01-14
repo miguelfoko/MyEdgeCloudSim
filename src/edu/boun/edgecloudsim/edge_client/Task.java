@@ -34,13 +34,14 @@ public class Task extends Cloudlet {
 	private int neededCPU;
 	private int neededRam;
 	private int neededStorage;
+	private int avDistanceTpMecServer;
 	
 	public Task(int _mobileDeviceId, int cloudletId, long cloudletLength, int pesNumber,
 			long cloudletFileSize, long cloudletOutputSize,
 			UtilizationModel utilizationModelCpu,
 			UtilizationModel utilizationModelRam,
 			UtilizationModel utilizationModelBw, AV_DIRECTION direction1, double velocity1,int neededBandwidth1,
-			int neededCPU1,int neededRam1,int neededStorage1) {
+			int neededCPU1,int neededRam1,int neededStorage1,int avDistanceTpMecServer1) {
 		super(cloudletId, cloudletLength, pesNumber, cloudletFileSize,
 				cloudletOutputSize, utilizationModelCpu, utilizationModelRam,
 				utilizationModelBw);
@@ -52,6 +53,7 @@ public class Task extends Cloudlet {
 		neededRam=neededRam1;
 		neededStorage=neededStorage1;
 		neededBandwidth=neededBandwidth1;
+		avDistanceTpMecServer=avDistanceTpMecServer1;
 		creationTime = CloudSim.clock();
 	}
 	
@@ -141,6 +143,10 @@ public class Task extends Cloudlet {
 
 	public int getNeededStorage() {
 		return neededStorage;
+	}
+
+	public int getAvDistanceTpMecServer() {
+		return avDistanceTpMecServer;
 	}
 	
 	

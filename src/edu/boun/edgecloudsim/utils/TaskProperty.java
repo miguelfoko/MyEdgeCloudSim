@@ -34,12 +34,13 @@ public class TaskProperty {
 	private int neededCPU;
 	private int neededRam;
 	private int neededStorage;
+	private int avDistanceToMecServer;
 
 	//Starting Our Constructors
 	public TaskProperty(double _startTime, int _mobileDeviceId, int _taskType, int _pesNumber, long _length, long _inputFileSize, 
 			long _outputFileSize, int vmUtilizationOnEdge1, int vmUtilizationOnCloud1,double delaySensitivity1,
 			int maxDelayRequirement1,AV_DIRECTION direction1,double velocity1,int neededBandwidth1,int neededCPU1,
-			int neededRam1,int neededStorage1) {
+			int neededRam1,int neededStorage1,int avDistanceToMecServer1) {
 		startTime=_startTime;
 		mobileDeviceId=_mobileDeviceId;
 		taskType=_taskType;
@@ -57,6 +58,7 @@ public class TaskProperty {
 		neededCPU=neededCPU1;
 		neededRam=neededRam1;
 		neededStorage=neededStorage1;
+		avDistanceToMecServer=avDistanceToMecServer1;
 	}
 	
 	public TaskProperty(int _mobileDeviceId, int _taskType, double _startTime, ExponentialDistribution[][] expRngList) {
@@ -76,9 +78,10 @@ public class TaskProperty {
 		direction=SimSettings.AV_DIRECTION.getRandomDirection();
 		velocity=SimUtils.getRandomDoubleNumber(SimSettings.getInstance().getMIN_TASK_VELOCITY(), SimSettings.getInstance().getMAX_TASK_VELOCITY());
 		neededBandwidth=SimUtils.getRandomNumber(SimSettings.getInstance().getMIN_TASK_BANDWIDTH_NEEDED(), SimSettings.getInstance().getMAX_TASK_BANDWIDTH_NEEDED());
-		neededCPU=SimUtils.getRandomNumber(SimSettings.getInstance().getMIN_TASK_CPU_NEEDED(), SimSettings.getInstance().getMAX_TASK_CPU_NEEDED());;
-		neededRam=SimUtils.getRandomNumber(SimSettings.getInstance().getMIN_TASK_RAM_NEEDED(), SimSettings.getInstance().getMAX_TASK_RAM_NEEDED());;;
-		neededStorage=SimUtils.getRandomNumber(SimSettings.getInstance().getMIN_TASK_STORAGE_NEEDED(), SimSettings.getInstance().getMAX_TASK_STORAGE_NEEDED());;;
+		neededCPU=SimUtils.getRandomNumber(SimSettings.getInstance().getMIN_TASK_CPU_NEEDED(), SimSettings.getInstance().getMAX_TASK_CPU_NEEDED());
+		neededRam=SimUtils.getRandomNumber(SimSettings.getInstance().getMIN_TASK_RAM_NEEDED(), SimSettings.getInstance().getMAX_TASK_RAM_NEEDED());
+		neededStorage=SimUtils.getRandomNumber(SimSettings.getInstance().getMIN_TASK_STORAGE_NEEDED(), SimSettings.getInstance().getMAX_TASK_STORAGE_NEEDED());
+		avDistanceToMecServer=SimUtils.getRandomNumber(SimSettings.getInstance().getMIN_AV_DISTANCE_TO_MEC_SERVER(),SimSettings.getInstance().getMAX_AV_DISTANCE_TO_MEC_SERVER());
 	}
 	
 	//Ending our constructors
@@ -176,13 +179,17 @@ public class TaskProperty {
 	public int getNeededStorage() {
 		return neededStorage;
 	}
+	
+	public int getAvDistanceToMecServer() {
+		return avDistanceToMecServer;
+	}
 
 	@Override
 	public String toString() {
 		return "TaskProperty [pesNumber=" + pesNumber + ", mobileDeviceId=" + mobileDeviceId + ", vmUtilizationOnEdge="
 				+ vmUtilizationOnEdge + ", vmUtilizationOnCloud=" + vmUtilizationOnCloud + ", direction=" + direction
 				+ ", velocity=" + velocity + ", neededBandwidth=" + neededBandwidth + ", neededCPU=" + neededCPU
-				+ ", neededRam=" + neededRam + ", neededStorage=" + neededStorage + "]";
+				+ ", neededRam=" + neededRam + ", neededStorage=" + neededStorage + ", avDistanceToMecServer=" + avDistanceToMecServer + "]";
 	}
 
 	

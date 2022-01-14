@@ -48,4 +48,11 @@ public abstract class NetworkModel {
 	public abstract void uploadFinished(Location accessPointLocation, int destDeviceId);
 	public abstract void downloadStarted(Location accessPointLocation, int sourceDeviceId);
 	public abstract void downloadFinished(Location accessPointLocation, int sourceDeviceId);
+	
+	/**For our proper implementation*/
+	public abstract void uploadStarted(Location accessPointLocation, int destDeviceId, Task task);
+	public abstract void uploadFinished(Location accessPointLocation, int destDeviceId, Task task);
+	public abstract void downloadStarted(Location accessPointLocation, int sourceDeviceId, Task task);
+	public abstract void downloadFinished(Location accessPointLocation, int sourceDeviceId, Task task);
+	
 }

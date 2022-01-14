@@ -182,7 +182,7 @@ public class AvnetMobileDeviceManager extends MobileDeviceManager {
 		double WlanDelay = networkModel.getUploadDelay(task.getMobileDeviceId(), nextHopId, task);
 
 		if(WlanDelay > 0){
-			networkModel.uploadStarted(currentLocation, nextHopId);
+			networkModel.uploadStarted(currentLocation, nextHopId, task);//Manage that method in AvnetModel
 			schedule(getId(), WlanDelay, REQUEST_RECEIVED_BY_EDGE_DEVICE, task);
 			AvnetSimLogger.getInstance().taskStarted(task.getCloudletId(), CloudSim.clock());
 			AvnetSimLogger.getInstance().setUploadDelay(task.getCloudletId(), WlanDelay, NETWORK_DELAY_TYPES.WLAN_DELAY);
@@ -291,7 +291,7 @@ public class AvnetMobileDeviceManager extends MobileDeviceManager {
 				edgeTask.getLength(), edgeTask.getPesNumber(),
 				edgeTask.getInputFileSize(), edgeTask.getOutputFileSize(),
 				utilizationModelCPU, utilizationModel, utilizationModel,edgeTask.getDirection(),edgeTask.getVelocity(),
-				edgeTask.getNeededBandwidth(),edgeTask.getNeededCPU(),edgeTask.getNeededRam(),edgeTask.getNeededStorage());
+				edgeTask.getNeededBandwidth(),edgeTask.getNeededCPU(),edgeTask.getNeededRam(),edgeTask.getNeededStorage(),edgeTask.getAvDistanceToMecServer());
 		//set the owner of this task
 		task.setUserId(this.getId());
 		task.setTaskType(edgeTask.getTaskType());

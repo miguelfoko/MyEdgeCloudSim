@@ -58,6 +58,12 @@ public class AvnetNetwork extends NetworkModel {
 		WlanPoissonMean = WlanPoissonMean/numOfTaskType;
 		avgTaskInputSize = avgTaskInputSize/numOfTaskType;
 		avgTaskOutputSize = avgTaskOutputSize/numOfTaskType;
+		
+		/**
+		 * Creation of MEC servers and cloud server for our own implementation
+		 * */
+		AvnetEdgeServer mecServer=new AvnetEdgeServer();
+		AvnetSimLogger.printLine("MEC server created++++++++++++++++++++++++++++++++++++++");
 
 	}
 
@@ -265,4 +271,32 @@ public class AvnetNetwork extends NetworkModel {
 
 	}
 
+	@Override
+	public void uploadStarted(Location accessPointLocation, int destDeviceId, Task task) {
+		// TODO Auto-generated method stub
+		/**
+		 * Call the AvnetdgeServer here
+		 * */
+		
+	}
+
+	@Override
+	public void uploadFinished(Location accessPointLocation, int destDeviceId, Task task) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void downloadStarted(Location accessPointLocation, int sourceDeviceId, Task task) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void downloadFinished(Location accessPointLocation, int sourceDeviceId, Task task) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 }

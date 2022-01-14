@@ -111,6 +111,14 @@ public class SimSettings {
 	private int BANDWITH_WAN; //Mbps unit in properties file
 	private int BANDWITH_LAN; //Mbps unit in properties file
 	private int BANDWITH_GSM; //Mbps unit in properties file
+	
+	private int MEC_COMPUTING_RESOURCES;
+	private int MEC_STORING_RESOURCES;
+	private int MEC_RAM_RESOURCES;
+	private int NUM_OF_MEC_SERVERS;
+	private int MIN_AV_DISTANCE_TO_MEC_SERVER;
+	private int MAX_AV_DISTANCE_TO_MEC_SERVER;
+	private int MEC_SERVER_RADIUS_COVERAGE;
 
 	private int NUM_OF_HOST_ON_CLOUD_DATACENTER;
 	private int NUM_OF_VM_ON_CLOUD_HOST;
@@ -232,6 +240,14 @@ public class SimSettings {
 			
 			THETA=Integer.parseInt(prop.getProperty("theta"));
 			LAMBDA=Integer.parseInt(prop.getProperty("lambda"));
+			MEC_COMPUTING_RESOURCES=Integer.parseInt(prop.getProperty("computing_resources"));
+			MEC_STORING_RESOURCES=Integer.parseInt(prop.getProperty("storing_resources"));
+			MEC_RAM_RESOURCES=Integer.parseInt(prop.getProperty("ram_resources"));
+			NUM_OF_MEC_SERVERS=Integer.parseInt(prop.getProperty("num_of_mec_servers"));
+			MIN_AV_DISTANCE_TO_MEC_SERVER=Integer.parseInt(prop.getProperty("min_av_distance_to_mec_server"));
+			MAX_AV_DISTANCE_TO_MEC_SERVER=Integer.parseInt(prop.getProperty("max_av_distance_to_mec_server"));
+			MEC_SERVER_RADIUS_COVERAGE=Integer.parseInt(prop.getProperty("mec_server_radius_coverage"));
+			
 			
 			RAM_FOR_VM = Integer.parseInt(prop.getProperty("ram_for_mobile_vm"));
 			CORE_FOR_VM = Integer.parseInt(prop.getProperty("core_for_mobile_vm"));
@@ -689,6 +705,56 @@ public class SimSettings {
 
 	public int getLAMBDA() {
 		return LAMBDA;
+	}
+
+	
+	public int getMEC_COMPUTING_RESOURCES() {
+		return MEC_COMPUTING_RESOURCES;
+	}
+
+	public int getMEC_STORING_RESOURCES() {
+		return MEC_STORING_RESOURCES;
+	}
+
+	public int getMEC_RAM_RESOURCES() {
+		return MEC_RAM_RESOURCES;
+	}
+
+	
+	public int getMIN_NUM_OF_MOBILE_DEVICES() {
+		return MIN_NUM_OF_MOBILE_DEVICES;
+	}
+
+	public int getNUM_OF_EDGE_DATACENTERS() {
+		return NUM_OF_EDGE_DATACENTERS;
+	}
+
+	public int getNUM_OF_EDGE_HOSTS() {
+		return NUM_OF_EDGE_HOSTS;
+	}
+
+	public int getNUM_OF_EDGE_VMS() {
+		return NUM_OF_EDGE_VMS;
+	}
+
+	public int getNUM_OF_MEC_SERVERS() {
+		return NUM_OF_MEC_SERVERS;
+	}
+
+	public int getMIN_AV_DISTANCE_TO_MEC_SERVER() {
+		return MIN_AV_DISTANCE_TO_MEC_SERVER;
+	}
+
+	public int getMAX_AV_DISTANCE_TO_MEC_SERVER() {
+		return MAX_AV_DISTANCE_TO_MEC_SERVER;
+	}
+
+	public int getMEC_SERVER_RADIUS_COVERAGE() {
+		return MEC_SERVER_RADIUS_COVERAGE;
+	}
+
+	public int getNUM_OF_HOST_ON_CLOUD_DATACENTER() {
+		return NUM_OF_HOST_ON_CLOUD_DATACENTER;
 	}
 
 	/**
