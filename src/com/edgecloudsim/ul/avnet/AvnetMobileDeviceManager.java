@@ -114,7 +114,7 @@ public class AvnetMobileDeviceManager extends MobileDeviceManager {
 		}
 
 		NetworkModel networkModel = AvnetCoreSimulation.getInstance().getNetworkModel();
-
+		AvnetEdgeServer mecServer=AvnetCoreSimulation.getInstance().getEdgeServerManager().getEdgeServer();
 		switch (ev.getTag()) {
 		case REQUEST_RECEIVED_BY_CLOUD:
 		{
@@ -131,6 +131,8 @@ public class AvnetMobileDeviceManager extends MobileDeviceManager {
 			Task task = (Task) ev.getData();
 
 			networkModel.uploadFinished(task.getSubmittedLocation(), SimSettings.GENERIC_EDGE_DEVICE_ID);
+			
+			mecServer.mecSDNController(task);
 
 			submitTaskToVm(task, 0, SimSettings.GENERIC_EDGE_DEVICE_ID);
 

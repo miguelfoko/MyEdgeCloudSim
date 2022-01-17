@@ -275,7 +275,7 @@ public class AvnetNetwork extends NetworkModel {
 	public void uploadStarted(Location accessPointLocation, int destDeviceId, Task task) {
 		// TODO Auto-generated method stub
 		/**
-		 * Call the AvnetdgeServer here
+		 * Call the AvnetedgeServer here
 		 * */
 		
 	}

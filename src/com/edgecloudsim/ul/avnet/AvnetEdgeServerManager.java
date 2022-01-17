@@ -34,16 +34,17 @@ import edu.boun.edgecloudsim.utils.Location;
 public class AvnetEdgeServerManager extends EdgeServerManager {
 	private int hostIdCounter;
 	
+	
 
 	public AvnetEdgeServerManager() {
 		hostIdCounter = 0;
 	}
 	@Override
 	public void initialize() {
-		// TODO Auto-generated method stub
+		edgeServer=new AvnetEdgeServer();
 
 	}
-
+	
 	@Override
 	public VmAllocationPolicy getVmAllocationPolicy(List<? extends Host> hostList, int dataCenterIndex) {
 		return new EdgeVmAllocationPolicy_Custom(hostList,dataCenterIndex);

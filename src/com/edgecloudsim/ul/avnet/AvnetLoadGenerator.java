@@ -86,7 +86,7 @@ public class AvnetLoadGenerator extends LoadGeneratorModel{
 				}
 				TaskProperty t=new TaskProperty(i,randomTaskType, virtualTime, expRngList);
 				taskList.add(t);
-				AvnetSimLogger.printLine("My Task is: "+t);
+				//AvnetSimLogger.printLine("My Task is: "+t);
 			}
 		}
 

@@ -23,10 +23,13 @@ import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.VmAllocationPolicy;
 
+import com.edgecloudsim.ul.avnet.AvnetEdgeServer;
+
 public abstract class EdgeServerManager {
 	protected List<Datacenter> localDatacenters;
 	protected List<List<EdgeVM>> vmList;
-
+	protected AvnetEdgeServer edgeServer;
+	
 	public EdgeServerManager() {
 		localDatacenters=new ArrayList<Datacenter>();
 		vmList = new ArrayList<List<EdgeVM>>();
@@ -40,6 +43,16 @@ public abstract class EdgeServerManager {
 		return localDatacenters;
 	}
 	
+	
+	
+	public AvnetEdgeServer getEdgeServer() {
+		return edgeServer;
+	}
+
+	public void setEdgeServer(AvnetEdgeServer edgeServer) {
+		this.edgeServer = edgeServer;
+	}
+
 	/*
 	 * initialize edge server manager if needed
 	 */

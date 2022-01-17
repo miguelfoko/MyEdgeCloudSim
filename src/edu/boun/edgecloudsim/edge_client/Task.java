@@ -35,6 +35,7 @@ public class Task extends Cloudlet {
 	private int neededRam;
 	private int neededStorage;
 	private int avDistanceTpMecServer;
+	private boolean process;
 	
 	public Task(int _mobileDeviceId, int cloudletId, long cloudletLength, int pesNumber,
 			long cloudletFileSize, long cloudletOutputSize,
@@ -55,6 +56,7 @@ public class Task extends Cloudlet {
 		neededBandwidth=neededBandwidth1;
 		avDistanceTpMecServer=avDistanceTpMecServer1;
 		creationTime = CloudSim.clock();
+		process=false;
 	}
 	
 	//End of our implementation
@@ -148,6 +150,20 @@ public class Task extends Cloudlet {
 	public int getAvDistanceTpMecServer() {
 		return avDistanceTpMecServer;
 	}
+	
+
+	public void setAvDistanceTpMecServer(int avDistanceTpMecServer) {
+		this.avDistanceTpMecServer = avDistanceTpMecServer;
+	}
+
+	public boolean isProcess() {
+		return process;
+	}
+
+	public void setProcess(boolean process) {
+		this.process = process;
+	}
+	
 	
 	
 }
