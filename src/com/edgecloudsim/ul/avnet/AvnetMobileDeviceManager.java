@@ -1,5 +1,6 @@
 package com.edgecloudsim.ul.avnet;
 
+import org.antlr.xjlib.appkit.gview.timer.GTimerDelegate;
 import org.cloudbus.cloudsim.UtilizationModel;
 import org.cloudbus.cloudsim.UtilizationModelFull;
 import org.cloudbus.cloudsim.Vm;
@@ -242,6 +243,16 @@ public class AvnetMobileDeviceManager extends MobileDeviceManager {
 			System.exit(1);
 		}
 	*/
+	}
+	@Override
+	
+	public void sendTaskToCloud(Task cloudTask) {
+		
+		NetworkModel networkModel = AvnetCoreSimulation.getInstance().getNetworkModel();
+		
+		int nextHopId = SimSettings.CLOUD_DATACENTER_ID;
+		double WlanDelay = networkModel.getUploadDelay(cloudTask.getMobileDeviceId(), nextHopId, cloudTask);
+		schedule(getId(), WlanDelay, REQUEST_RECEIVED_BY_CLOUD, cloudTask);
 	}
 
 	private void submitTaskToVm(Task task, double delay, int datacenterId) {

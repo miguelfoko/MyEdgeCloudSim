@@ -15,9 +15,6 @@ import edu.boun.edgecloudsim.utils.SimUtils;
 public class AvnetEdgeServer {
 	
 	private static final int BASE = 100000; //start from base in order not to conflict cloudsim tag!
-	private static final int REQUEST_RECEIVED_BY_CLOUD = BASE + 1;
-	private static final int REQUEST_RECEIVED_BY_EDGE_DEVICE = BASE + 2;
-	private static final int RESPONSE_RECEIVED_BY_MOBILE_DEVICE = BASE + 3;
 	
 	
 	private List<Task> listOfTasks;
@@ -29,6 +26,8 @@ public class AvnetEdgeServer {
 	private AV_DIRECTION orientation;//This parameter will help to direct AVs according to their direction
 	private static int[] distance;//Virtual distance between MEC severs and AVs
 	private int radius;
+	public static int numberOfTasks, numOfTaskProcessedInternaly,numOfTaskProcessedAwayDueToCapacity,numOfTaskProcessedAwayDueToAvPosition
+	,numOfTaskAlreadyProcessed;
 
 
 
@@ -60,7 +59,8 @@ public class AvnetEdgeServer {
 	 * ****This function should return the delay used for task computing****
 	 * */
 	public double mecSDNController(Task incomingTask) {
-		AvnetSimLogger.printLine("***************************************INSIDE MEC SDN CONTROLLER*****************************");
+		//AvnetSimLogger.printLine("***************************************INSIDE MEC SDN CONTROLLER*****************************");
+		numberOfTasks++;
 		double returnValue=0;
 		this.listOfTasks.add(incomingTask);
 		this.usedComputingResources+=incomingTask.getNeededCPU();
@@ -68,22 +68,26 @@ public class AvnetEdgeServer {
 		this.usedRamResources+=incomingTask.getNeededRam();
 		boolean position=checkPosition(incomingTask);
 		if(position) {
+			
 			if(mecVNFChecker(incomingTask)) {
 				/**
 				 * Task can be computed in the actual MEC server
 				 * The propagation delay considers both the time for the request to reach the MEC server and time for the response
 				 * to reach the requesting AV
 				 */
+				numOfTaskProcessedInternaly++;
 				mecVNFProcessor(incomingTask);
 				mecVNFSender(incomingTask);
 				mecAvResult(incomingTask);
 				returnValue=2*SimSettings.getInstance().getWLAN_PROPAGATION_DELAY();//to check again
 			}else {
+				AvnetSimLogger.printLine("**********************INSIDE MEC SDN CONTROLLER: VNF Checker Failed" + "***********************");
 				mecVNFSender(incomingTask);
 				if(incomingTask.isProcess()) {
 					/**
 					 * Task is processed and result is sent to the cloud SDN controller for saving
 					 * */
+					numOfTaskAlreadyProcessed++;
 					mecCloudResult(incomingTask);
 					returnValue=2*(SimSettings.getInstance().getWAN_PROPAGATION_DELAY()+
 							SimSettings.getInstance().getMAN_PROPAGATION_DELAY()+
@@ -92,6 +96,7 @@ public class AvnetEdgeServer {
 					/**
 					 * Task is sent to the next MEC server of to the cloud server for processing
 					 * */
+					numOfTaskProcessedAwayDueToCapacity++;
 					mecVNFReceiver(incomingTask);
 				}
 				/**
@@ -112,6 +117,8 @@ public class AvnetEdgeServer {
 			 * of the actual MEC server at the end of it computations if it does it
 			 * We use the internalLANDelay to materialise the changing of the MEC server (it is donne by the cloud server)
 			 */
+			numOfTaskProcessedAwayDueToAvPosition++;
+			mecCloudResult(incomingTask);
 			returnValue=2*(SimSettings.getInstance().getWLAN_PROPAGATION_DELAY()+
 					SimSettings.getInstance().getMAN_PROPAGATION_DELAY()+
 					SimSettings.getInstance().getWAN_PROPAGATION_DELAY())
@@ -130,7 +137,9 @@ public class AvnetEdgeServer {
 	 * coverage area of the actual MEC server at the end of computations
 	 * */
 	private boolean checkPosition(Task incomingTask) {
-		//to complete
+		//AvnetSimLogger.printLine("**********************INSIDE MEC SDN CONTROLLER: Checking AV's position" + "***********************");
+		if(incomingTask.getAvDistanceTpMecServer()<=this.radius)
+			return true;
 		return false;
 	}
 
@@ -141,6 +150,7 @@ public class AvnetEdgeServer {
 	}
 
 	private void mecVNFReceiver(Task incomingTask) {
+		AvnetSimLogger.printLine("**********************INSIDE MEC SDN CONTROLLER: NFV Receiver" + "***********************");
 		if(checkPosition(incomingTask)) {
 			incomingTask.setAvDistanceTpMecServer(SimUtils.getRandomNumber(SimSettings.getInstance().getMIN_AV_DISTANCE_TO_MEC_SERVER(),SimSettings.getInstance().getMAX_AV_DISTANCE_TO_MEC_SERVER()));
 			mecSDNController(incomingTask);
@@ -150,7 +160,7 @@ public class AvnetEdgeServer {
 	}
 
 	private void mecVNFSender(Task incomingTask) {
-
+		//AvnetSimLogger.printLine("**********************INSIDE MEC SDN CONTROLLER: NFV Sender" + "***********************");
 	}
 
 	private boolean mecVNFChecker(Task incomingTask) {
@@ -160,12 +170,14 @@ public class AvnetEdgeServer {
 		/**
 		 * Check if the total needed resources to compute the incoming task are available in the actual MEC server
 		 * */
-		int comp=computingResources-this.theta*computingResources;
-		int stor=storingResources-this.lambda*storingResources;
-		int ram=ramResources-this.theta*computingResources;
+		int comp=computingResources-this.theta*computingResources/100;
+		int stor=storingResources-this.lambda*storingResources/100;
+		int ram=ramResources-this.theta*computingResources/100;
 		/**
 		 * We should update the used Computing/Storing and Ram resources in order to evaluate their cost at the end of our proposal
 		 * */
+//		AvnetSimLogger.printLine("UsedComputingResources: "+usedComputingResources+"; comp= "+comp+"; UsedStoringesources: "+
+//		 usedStoringResources+"; Storage: "+stor+"; UsedRam: "+usedRamResources+";Ram= "+ram);
 		if((usedComputingResources<=comp && usedRamResources<=ram) && usedStoringResources<=stor)
 			return true;
 		return false;
@@ -173,7 +185,9 @@ public class AvnetEdgeServer {
 	}
 
 	private void mecVNFProcessor(Task incomingTask) {
+//		numOfTaskProcessedInternaly++;
 		incomingTask.setProcess(true);
+		//AvnetSimLogger.printLine("**********************INSIDE MEC SDN CONTROLLER: Task Processing" + "***********************");
 	}
 
 	private void mecAvResult(Task incomingTask) {
@@ -181,20 +195,25 @@ public class AvnetEdgeServer {
 	}
 
 	private void mecCloudResult(Task incomingTask) {
-		NetworkModel networkModel = AvnetCoreSimulation.getInstance().getNetworkModel();
-		
-		int nextHopId = SimSettings.CLOUD_DATACENTER_ID;
-		double WlanDelay = networkModel.getUploadDelay(incomingTask.getMobileDeviceId(), nextHopId, incomingTask);
-		schedule(AvnetCoreSimulation.getInstance().getMobileDeviceManager().getId(), WlanDelay, REQUEST_RECEIVED_BY_EDGE_DEVICE, incomingTask);
-		
-		
+		if(incomingTask.isFinished()) {
+			/**
+			 * Task is sent to cloud for storing
+			 * */
+//			numOfTaskAlreadyProcessed++;
+		}
+		else {
+			/** Task is sent to cloud for processing*/
+			if(checkPosition(incomingTask)) {
+//				numOfTaskProcessedAwayDueToAvPosition++;
+			}
+			else {
+//				numOfTaskProcessedAwayDueToCapacity++;
+			}
+			
+		}
+		//AvnetCoreSimulation.getInstance().getMobileDeviceManager().sendTaskToCloud(incomingTask);		
 	}
 
 
-
-	private void schedule(int id, double wlanDelay, int requestReceivedByEdgeDevice, Task incomingTask) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

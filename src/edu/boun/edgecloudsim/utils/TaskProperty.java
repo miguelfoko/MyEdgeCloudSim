@@ -190,6 +190,80 @@ public class TaskProperty {
 	public boolean isProcess() {
 		return process;
 	}
+	
+	
+
+	public void setStartTime(double startTime) {
+		this.startTime = startTime;
+	}
+
+	public void setLength(long length) {
+		this.length = length;
+	}
+
+	public void setInputFileSize(long inputFileSize) {
+		this.inputFileSize = inputFileSize;
+	}
+
+	public void setOutputFileSize(long outputFileSize) {
+		this.outputFileSize = outputFileSize;
+	}
+
+	public void setTaskType(int taskType) {
+		this.taskType = taskType;
+	}
+
+	public void setPesNumber(int pesNumber) {
+		this.pesNumber = pesNumber;
+	}
+
+	public void setMobileDeviceId(int mobileDeviceId) {
+		this.mobileDeviceId = mobileDeviceId;
+	}
+
+	public void setVmUtilizationOnEdge(int vmUtilizationOnEdge) {
+		this.vmUtilizationOnEdge = vmUtilizationOnEdge;
+	}
+
+	public void setVmUtilizationOnCloud(int vmUtilizationOnCloud) {
+		this.vmUtilizationOnCloud = vmUtilizationOnCloud;
+	}
+
+	public void setDelaySensitivity(double delaySensitivity) {
+		this.delaySensitivity = delaySensitivity;
+	}
+
+	public void setMaxDelayRequirement(int maxDelayRequirement) {
+		this.maxDelayRequirement = maxDelayRequirement;
+	}
+
+	public void setVelocity(double velocity) {
+		this.velocity = velocity;
+	}
+
+	public void setNeededBandwidth(int neededBandwidth) {
+		this.neededBandwidth = neededBandwidth;
+	}
+
+	public void setNeededCPU(int neededCPU) {
+		this.neededCPU = neededCPU;
+	}
+
+	public void setNeededRam(int neededRam) {
+		this.neededRam = neededRam;
+	}
+
+	public void setNeededStorage(int neededStorage) {
+		this.neededStorage = neededStorage;
+	}
+
+	public void setAvDistanceToMecServer(int avDistanceToMecServer) {
+		this.avDistanceToMecServer = avDistanceToMecServer;
+	}
+
+	public void setProcess(boolean process) {
+		this.process = process;
+	}
 
 	@Override
 	public String toString() {
