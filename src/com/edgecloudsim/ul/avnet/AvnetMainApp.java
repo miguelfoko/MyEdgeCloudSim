@@ -43,8 +43,8 @@ public class AvnetMainApp {
 			applicationsFile = "scripts/avnet/config/applications.xml";
 			edgeDevicesFile = "scripts/avnet/config/edge_devices.xml";
 			outputFolder = "sim_results/avnet" + iterationNumber;
-		}
-
+		}		
+		
 		//load settings from configuration file
 		SimSettings SS = SimSettings.getInstance();
 		if(SS.initialize(configFile, edgeDevicesFile, applicationsFile) == false){
@@ -56,6 +56,14 @@ public class AvnetMainApp {
 			AvnetSimLogger.enableFileLog();
 			SimUtils.cleanOutputFolder(outputFolder);
 		}
+		
+		/**
+		 * Creation of trace files @author fsmiguel
+		 * */
+		
+		TraceFile.initialize();
+		
+		//traceFile.insertLatencyData("Latency.csv", "Bravoooooooo");
 		
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		Date simulationStartDate = Calendar.getInstance().getTime();
@@ -91,7 +99,7 @@ public class AvnetMainApp {
 						
 						//generate EdgeCloudSim Simulation Manager
 						AvnetCoreSimulation manager=new AvnetCoreSimulation(avnetScenarioFactory, j, simScenario, orchestratorPolicy);
-						
+												
 						//Start simulation
 						manager.startSimulation();
 //						AvnetSimLogger.printLine("Avnet Testing");

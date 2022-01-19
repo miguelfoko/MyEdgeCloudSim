@@ -119,6 +119,7 @@ public class SimSettings {
 	private int MIN_AV_DISTANCE_TO_MEC_SERVER;
 	private int MAX_AV_DISTANCE_TO_MEC_SERVER;
 	private int MEC_SERVER_RADIUS_COVERAGE;
+	private String TRACE_DIRECTORY;
 
 	private int NUM_OF_HOST_ON_CLOUD_DATACENTER;
 	private int NUM_OF_VM_ON_CLOUD_HOST;
@@ -253,6 +254,7 @@ public class SimSettings {
 			CORE_FOR_VM = Integer.parseInt(prop.getProperty("core_for_mobile_vm"));
 			MIPS_FOR_VM = Integer.parseInt(prop.getProperty("mips_for_mobile_vm"));
 			STORAGE_FOR_VM = Integer.parseInt(prop.getProperty("storage_for_mobile_vm"));
+			TRACE_DIRECTORY = prop.getProperty("trace_directory");
 
 			ORCHESTRATOR_POLICIES = prop.getProperty("orchestrator_policies").split(",");
 
@@ -755,6 +757,16 @@ public class SimSettings {
 
 	public int getNUM_OF_HOST_ON_CLOUD_DATACENTER() {
 		return NUM_OF_HOST_ON_CLOUD_DATACENTER;
+	}
+	
+	
+
+	public String getTraceDirectory() {
+		return TRACE_DIRECTORY;
+	}
+
+	public void setTraceDirectory(String traceDirectory) {
+		TRACE_DIRECTORY = traceDirectory;
 	}
 
 	/**

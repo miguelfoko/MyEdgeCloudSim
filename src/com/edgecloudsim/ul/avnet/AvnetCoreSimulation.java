@@ -49,6 +49,7 @@ public class AvnetCoreSimulation extends SimEntity {
 	private LoadGeneratorModel loadGeneratorModel;
 	private MobileDeviceManager mobileDeviceManager;
 
+		
 	private static AvnetCoreSimulation instance=null;
 
 	public AvnetCoreSimulation(ScenarioFactory _scenarioFactory, int _numOfMobileDevice, String _simScenario, String _orchestratorPolicy) throws Exception {
@@ -57,7 +58,9 @@ public class AvnetCoreSimulation extends SimEntity {
 		scenarioFactory = _scenarioFactory;
 		numOfMobileDevice = _numOfMobileDevice;
 		orchestratorPolicy = _orchestratorPolicy;
-
+		
+		
+		
 		AvnetSimLogger.print("Creating tasks...");
 		loadGeneratorModel = scenarioFactory.getLoadGeneratorModel();
 		loadGeneratorModel.initializeModel();
@@ -244,12 +247,17 @@ public class AvnetCoreSimulation extends SimEntity {
 				break;
 			case STOP_SIMULATION:
 				CloudSim.terminateSimulation();
+				
 				AvnetSimLogger.printLine(
 						"\n------Number of tasks:"+AvnetEdgeServer.numberOfTasks
 						+", Number of task in local: "+	AvnetEdgeServer.numOfTaskProcessedInternaly
 						+", Number of task away due to AV position: "+AvnetEdgeServer.numOfTaskProcessedAwayDueToAvPosition
 						+", Number of task away due to MEC Capacity: "+AvnetEdgeServer.numOfTaskProcessedAwayDueToCapacity
 						+ ", Number of Task Already processed: "+AvnetEdgeServer.numOfTaskAlreadyProcessed+"\n");
+				String data=AvnetEdgeServer.numberOfTasks+","+AvnetEdgeServer.numOfTaskProcessedInternaly+","
+						+AvnetEdgeServer.numOfTaskProcessedAwayDueToAvPosition+","+AvnetEdgeServer.numOfTaskProcessedAwayDueToCapacity
+						+","+AvnetEdgeServer.numOfTaskAlreadyProcessed;
+				TraceFile.insertData("Task.csv", data);
 				try {
 					AvnetSimLogger.getInstance().simStopped();
 				} catch (IOException e) {
