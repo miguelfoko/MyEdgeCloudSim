@@ -28,6 +28,7 @@ public class AvnetEdgeServer {
 	private int radius;
 	public static int numberOfTasks, numOfTaskProcessedInternaly,numOfTaskProcessedAwayDueToCapacity,numOfTaskProcessedAwayDueToAvPosition
 	,numOfTaskAlreadyProcessed;
+	public static double wlanDelay,lanDelay,wanDelay,manDelay;
 
 
 
@@ -79,7 +80,8 @@ public class AvnetEdgeServer {
 				mecVNFProcessor(incomingTask);
 				mecVNFSender(incomingTask);
 				mecAvResult(incomingTask);
-				returnValue=2*SimSettings.getInstance().getWLAN_PROPAGATION_DELAY();//to check again
+				returnValue=2*SimSettings.getInstance().getWLAN_PROPAGATION_DELAY()
+						+4*SimSettings.getInstance().getInternalLanDelay();
 			}else {
 				AvnetSimLogger.printLine("**********************INSIDE MEC SDN CONTROLLER: VNF Checker Failed" + "***********************");
 				mecVNFSender(incomingTask);
@@ -101,10 +103,12 @@ public class AvnetEdgeServer {
 				}
 				/**
 				 *The task should be computed to the Cloud server due to a capacity problem in the actual MEC sever 
+				 *To obtain the numbers, we referred to Fig2.4: MEC server internal architecture of our scheme
 				 */
-				returnValue=2*(SimSettings.getInstance().getWAN_PROPAGATION_DELAY()+
-						SimSettings.getInstance().getMAN_PROPAGATION_DELAY()+
-						SimSettings.getInstance().getWAN_PROPAGATION_DELAY());
+				returnValue=5*SimSettings.getInstance().getInternalLanDelay()
+						+2*SimSettings.getInstance().getWAN_PROPAGATION_DELAY()
+						+2*SimSettings.getInstance().getMAN_PROPAGATION_DELAY()
+						+2*SimSettings.getInstance().getWLAN_PROPAGATION_DELAY();
 				//Find a way to materialized tasks that belong to Actual MEC server that are not yet proceeded
 			}
 
@@ -115,14 +119,14 @@ public class AvnetEdgeServer {
 			 * 
 			 * Here we forward the task to the cloud server because the requesting AV will no more be in the coverage area 
 			 * of the actual MEC server at the end of it computations if it does it
-			 * We use the internalLANDelay to materialise the changing of the MEC server (it is donne by the cloud server)
+			 * We use the internalLANDelay to materialize the changing of the MEC server (it is done by the cloud server)
 			 */
 			numOfTaskProcessedAwayDueToAvPosition++;
 			mecCloudResult(incomingTask);
-			returnValue=2*(SimSettings.getInstance().getWLAN_PROPAGATION_DELAY()+
-					SimSettings.getInstance().getMAN_PROPAGATION_DELAY()+
-					SimSettings.getInstance().getWAN_PROPAGATION_DELAY())
-					+SimSettings.getInstance().getInternalLanDelay();
+			returnValue=2*SimSettings.getInstance().getWLAN_PROPAGATION_DELAY()+
+					2*SimSettings.getInstance().getMAN_PROPAGATION_DELAY()+
+					2*SimSettings.getInstance().getWAN_PROPAGATION_DELAY()
+					+4*SimSettings.getInstance().getInternalLanDelay();
 
 		}
 		this.usedComputingResources-=incomingTask.getNeededCPU();
@@ -150,7 +154,16 @@ public class AvnetEdgeServer {
 	}
 
 	private void mecVNFReceiver(Task incomingTask) {
-		AvnetSimLogger.printLine("**********************INSIDE MEC SDN CONTROLLER: NFV Receiver" + "***********************");
+		//AvnetSimLogger.printLine("**********************INSIDE MEC SDN CONTROLLER: NFV Receiver" + "***********************");
+		
+		/**
+		 * Delay Management
+		 * Communication between two VMs(Here VM4 and VM1) in the same MEC server is materialized by the InternalLanDelay
+		 * from VM4 to VM1
+		 * */
+		lanDelay+=SimSettings.getInstance().getInternalLanDelay();
+		
+		
 		if(checkPosition(incomingTask)) {
 			incomingTask.setAvDistanceTpMecServer(SimUtils.getRandomNumber(SimSettings.getInstance().getMIN_AV_DISTANCE_TO_MEC_SERVER(),SimSettings.getInstance().getMAX_AV_DISTANCE_TO_MEC_SERVER()));
 			mecSDNController(incomingTask);
@@ -161,21 +174,41 @@ public class AvnetEdgeServer {
 
 	private void mecVNFSender(Task incomingTask) {
 		//AvnetSimLogger.printLine("**********************INSIDE MEC SDN CONTROLLER: NFV Sender" + "***********************");
+		/**
+		 * Delay Management
+		 * Communication between two VMs(Here VM1 and VM4 & VM4 and Cloud server) in the same MEC server is materialized by the InternalLanDelay
+		 * from VM1 to VM4 and from VM4 to CDC
+		 * */
+		lanDelay+=SimSettings.getInstance().getInternalLanDelay();
+		manDelay+=SimSettings.getInstance().getMAN_PROPAGATION_DELAY();
+		wanDelay+=SimSettings.getInstance().getWAN_PROPAGATION_DELAY();
 	}
 
 	private boolean mecVNFChecker(Task incomingTask) {
 		int computingResources=SimSettings.getInstance().getMEC_COMPUTING_RESOURCES();
 		int storingResources=SimSettings.getInstance().getMEC_STORING_RESOURCES();
 		int ramResources=SimSettings.getInstance().getMEC_RAM_RESOURCES();
+		
+		/**
+		 * Delay Management
+		 * Communication between two VMs(Here VM1 and VM2) in the same MEC server is materialized by the InternalLanDelay
+		 * 2 beacause the task arived to VM3 and go back to VM1 after processing
+		 * */
+		lanDelay+=2*SimSettings.getInstance().getInternalLanDelay();
+		//wlanDelay+=2*SimSettings.getInstance().getWLAN_PROPAGATION_DELAY();
+		incomingTask.setProcess(true);
+		
+		
+		
+		/**
+		 * We should update the used Computing/Storing and Ram resources in order to evaluate their cost at the end of our proposal
+		 * */
 		/**
 		 * Check if the total needed resources to compute the incoming task are available in the actual MEC server
 		 * */
 		int comp=computingResources-this.theta*computingResources/100;
 		int stor=storingResources-this.lambda*storingResources/100;
 		int ram=ramResources-this.theta*computingResources/100;
-		/**
-		 * We should update the used Computing/Storing and Ram resources in order to evaluate their cost at the end of our proposal
-		 * */
 //		AvnetSimLogger.printLine("UsedComputingResources: "+usedComputingResources+"; comp= "+comp+"; UsedStoringesources: "+
 //		 usedStoringResources+"; Storage: "+stor+"; UsedRam: "+usedRamResources+";Ram= "+ram);
 		if((usedComputingResources<=comp && usedRamResources<=ram) && usedStoringResources<=stor)
@@ -185,13 +218,24 @@ public class AvnetEdgeServer {
 	}
 
 	private void mecVNFProcessor(Task incomingTask) {
-//		numOfTaskProcessedInternaly++;
+		/**
+		 * Delay Management
+		 * Communication between two VMs(Here VM1 and VM3) in the same MEC server is materialized by the InternalLanDelay
+		 * 2 beacause the task arived to VM3 and go back to VM1 after processing
+		 * */
+		lanDelay+=2*SimSettings.getInstance().getInternalLanDelay();
+		//wlanDelay+=2*SimSettings.getInstance().getWLAN_PROPAGATION_DELAY();
 		incomingTask.setProcess(true);
 		//AvnetSimLogger.printLine("**********************INSIDE MEC SDN CONTROLLER: Task Processing" + "***********************");
 	}
 
 	private void mecAvResult(Task incomingTask) {
-
+		/**
+		 * Delay Management
+		 * Communication between two VMs(Here VM1 and AV) in the same MEC server is materialized by the InternalLanDelay
+		 * from VM1 to VM4 and from VM4 to CDC
+		 * */
+		wlanDelay+=2*SimSettings.getInstance().getWLAN_PROPAGATION_DELAY();
 	}
 
 	private void mecCloudResult(Task incomingTask) {

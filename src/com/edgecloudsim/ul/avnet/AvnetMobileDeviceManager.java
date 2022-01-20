@@ -133,7 +133,14 @@ public class AvnetMobileDeviceManager extends MobileDeviceManager {
 
 			networkModel.uploadFinished(task.getSubmittedLocation(), SimSettings.GENERIC_EDGE_DEVICE_ID);
 			
-			mecServer.mecSDNController(task);
+			double taskDelay=mecServer.mecSDNController(task);
+			
+			
+			//Delay Management
+			String data=taskDelay+","+AvnetEdgeServer.wanDelay+","+AvnetEdgeServer.manDelay+","+AvnetEdgeServer.wlanDelay
+					+","+AvnetEdgeServer.lanDelay;
+			TraceFile.insertData("Latency.csv", data);
+			
 
 			submitTaskToVm(task, 0, SimSettings.GENERIC_EDGE_DEVICE_ID);
 
