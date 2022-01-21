@@ -14,8 +14,6 @@ import edu.boun.edgecloudsim.utils.SimUtils;
 
 public class AvnetEdgeServer {
 	
-	private static final int BASE = 100000; //start from base in order not to conflict cloudsim tag!
-	
 	
 	private List<Task> listOfTasks;
 	private int usedComputingResources;
@@ -25,34 +23,162 @@ public class AvnetEdgeServer {
 	private int lambda;//computing ressource needed my the mec server for internal processing
 	private AV_DIRECTION orientation;//This parameter will help to direct AVs according to their direction
 	private static int[] distance;//Virtual distance between MEC severs and AVs
-	private int radius;
-	public static int numberOfTasks, numOfTaskProcessedInternaly,numOfTaskProcessedAwayDueToCapacity,numOfTaskProcessedAwayDueToAvPosition
-	,numOfTaskAlreadyProcessed;
-	public static double wlanDelay,lanDelay,wanDelay,manDelay;
-
-
-
-	public AvnetEdgeServer() {
-		this.listOfTasks=new ArrayList<Task>();
-		this.theta=SimSettings.getInstance().getTHETA();
-		this.lambda=SimSettings.getInstance().getLAMBDA();
-		this.radius=SimSettings.getInstance().getMEC_SERVER_RADIUS_COVERAGE();
-		this.usedComputingResources=0;//That is CR_i in the manuscript
-		this.usedStoringResources=0;//That is SR_i in the manuscript
-		this.usedRamResources=0;//That is a complement to CR_i in the manuscript
+	public List<Task> getListOfTasks() {
+		return listOfTasks;
 	}
 
 
 
-	public AvnetEdgeServer(List<Task> listOfTasks, int computingResources, int storingResources, int ramResources,
-			int theta, int lambda, AV_DIRECTION orientation, int radius) {
+	public int getUsedComputingResources() {
+		return usedComputingResources;
+	}
+
+
+
+	public int getUsedStoringResources() {
+		return usedStoringResources;
+	}
+
+
+
+	public int getUsedRamResources() {
+		return usedRamResources;
+	}
+
+
+
+	public int getTheta() {
+		return theta;
+	}
+
+
+
+	public int getLambda() {
+		return lambda;
+	}
+
+
+
+	public AV_DIRECTION getOrientation() {
+		return orientation;
+	}
+
+
+
+	public int getRadius() {
+		return radius;
+	}
+
+
+
+	public int getNumberOfTasks() {
+		return numberOfTasks;
+	}
+
+
+
+	public int getNumOfTaskProcessedInternaly() {
+		return numOfTaskProcessedInternaly;
+	}
+
+
+
+	public int getNumOfTaskProcessedAwayDueToCapacity() {
+		return numOfTaskProcessedAwayDueToCapacity;
+	}
+
+
+
+	public int getNumOfTaskProcessedAwayDueToAvPosition() {
+		return numOfTaskProcessedAwayDueToAvPosition;
+	}
+
+
+
+	public int getNumOfTaskAlreadyProcessed() {
+		return numOfTaskAlreadyProcessed;
+	}
+
+
+
+	public double getWlanDelay() {
+		return wlanDelay;
+	}
+
+
+
+	public double getLanDelay() {
+		return lanDelay;
+	}
+
+
+
+	public double getWanDelay() {
+		return wanDelay;
+	}
+
+
+
+	public double getManDelay() {
+		return manDelay;
+	}
+
+	private int radius;
+	public int numberOfTasks
+	,numOfTaskProcessedInternaly
+	,numOfTaskProcessedAwayDueToCapacity
+	,numOfTaskProcessedAwayDueToAvPosition
+	,numOfTaskAlreadyProcessed;
+	public double wlanDelay,lanDelay,wanDelay,manDelay;
+
+
+	
+
+	public AvnetEdgeServer() {
+		this.listOfTasks = new ArrayList<Task>();
+		this.usedComputingResources = 0;
+		this.usedStoringResources = 0;
+		this.usedRamResources = 0;
+		this.theta=SimSettings.getInstance().getTHETA();
+		this.lambda=SimSettings.getInstance().getLAMBDA();
+		this.radius=SimSettings.getInstance().getMEC_SERVER_RADIUS_COVERAGE();
+		this.numberOfTasks = 0;
+		this.numOfTaskProcessedInternaly = 0;
+		this.numOfTaskProcessedAwayDueToCapacity = 0;
+		this.numOfTaskProcessedAwayDueToAvPosition = 0;
+		this.numOfTaskAlreadyProcessed = 0;
+		this.wlanDelay = 0;
+		this.lanDelay = 0;
+		this.wanDelay = 0;
+		this.manDelay = 0;
+	}
+
+
+	public AvnetEdgeServer(List<Task> listOfTasks, int usedComputingResources, int usedStoringResources,
+			int usedRamResources, int theta, int lambda, AV_DIRECTION orientation, int radius, int numberOfTasks,
+			int numOfTaskProcessedInternaly, int numOfTaskProcessedAwayDueToCapacity,
+			int numOfTaskProcessedAwayDueToAvPosition, int numOfTaskAlreadyProcessed, double wlanDelay, double lanDelay,
+			double wanDelay, double manDelay) {
 		super();
 		this.listOfTasks = listOfTasks;
+		this.usedComputingResources = usedComputingResources;
+		this.usedStoringResources = usedStoringResources;
+		this.usedRamResources = usedRamResources;
 		this.theta = theta;
 		this.lambda = lambda;
 		this.orientation = orientation;
 		this.radius = radius;
+		this.numberOfTasks = numberOfTasks;
+		this.numOfTaskProcessedInternaly = numOfTaskProcessedInternaly;
+		this.numOfTaskProcessedAwayDueToCapacity = numOfTaskProcessedAwayDueToCapacity;
+		this.numOfTaskProcessedAwayDueToAvPosition = numOfTaskProcessedAwayDueToAvPosition;
+		this.numOfTaskAlreadyProcessed = numOfTaskAlreadyProcessed;
+		this.wlanDelay = wlanDelay;
+		this.lanDelay = lanDelay;
+		this.wanDelay = wanDelay;
+		this.manDelay = manDelay;
 	}
+
 
 
 	/**
@@ -67,6 +193,12 @@ public class AvnetEdgeServer {
 		this.usedComputingResources+=incomingTask.getNeededCPU();
 		this.usedStoringResources+=incomingTask.getNeededStorage();
 		this.usedRamResources+=incomingTask.getNeededRam();
+		
+		this.wlanDelay = 0;
+		this.lanDelay = 0;
+		this.wanDelay = 0;
+		this.manDelay = 0;
+		
 		boolean position=checkPosition(incomingTask);
 		if(position) {
 			
@@ -166,7 +298,10 @@ public class AvnetEdgeServer {
 		
 		if(checkPosition(incomingTask)) {
 			incomingTask.setAvDistanceTpMecServer(SimUtils.getRandomNumber(SimSettings.getInstance().getMIN_AV_DISTANCE_TO_MEC_SERVER(),SimSettings.getInstance().getMAX_AV_DISTANCE_TO_MEC_SERVER()));
-			mecSDNController(incomingTask);
+			//mecSDNController(incomingTask);
+			mecVNFProcessor(incomingTask);
+			mecVNFSender(incomingTask);
+			mecAvResult(incomingTask);
 		}else {
 			mecVNFReceiver(incomingTask);
 		}

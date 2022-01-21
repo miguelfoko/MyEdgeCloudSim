@@ -14,25 +14,25 @@ public class TraceFile {
 	 * @param String type// must specify the trace type withing latency, computing, storing, bandwidth, etc.
 	 * */
 	@SuppressWarnings("finally")
-	public static boolean createTrace(String type) {
+	public static boolean createTrace(String type,int numAv) {
 		boolean valRet=false;
 		String fileName=null;
 		if(type.equals("latency"))
-			fileName="Latency.csv";
+			fileName="Latency_"+numAv+"_AV.csv";
 		else
 			if(type.equals("computing"))
-				fileName="Computing.csv";
+				fileName="Computing_"+numAv+"_AV.csv";
 			else
 				if(type.equals("storing"))
-					fileName="Storing.csv";
+					fileName="Storing_"+numAv+"_AV.csv";
 				else
 					if(type.equals("ram"))
-						fileName="Ram.csv";
+						fileName="Ram_"+numAv+"_AV.csv";
 					else
 						if(type.equals("bandwidth"))//It is Bandwidth
-							fileName="Bandwidth.csv";
+							fileName="Bandwidth_"+numAv+"_AV.csv";
 						else
-							fileName="Task.csv";
+							fileName="Task_"+numAv+"_AV.csv";
 		try {
 			File myObj = new File(traceDirectory,fileName);
 			if (myObj.createNewFile()) {
@@ -74,25 +74,27 @@ public class TraceFile {
 	}
 	
 	public static void initialize() {
-		TraceFile.createTrace("latency");
-		TraceFile.createTrace("computing");
-		TraceFile.createTrace("storing");
-		TraceFile.createTrace("ram");
-		TraceFile.createTrace("bandwidth");
-		TraceFile.createTrace("task");
+		int numAv=SimSettings.getInstance().getMaxNumOfMobileDev();
+		TraceFile.createTrace("latency",numAv);
+		TraceFile.createTrace("computing",numAv);
+		TraceFile.createTrace("storing",numAv);
+		TraceFile.createTrace("ram",numAv);
+		TraceFile.createTrace("bandwidth",numAv);
+		TraceFile.createTrace("task",numAv);
 		
 		/**
 		 * Initialization of the trace file for tasks creation/processing
 		 * */
 		String data="NumberOfTasks,NumberOfLocalTask,NumberOfAwayTaskDueToPosition"
-				+ ",NumberOfAwayTaskDueToCapacity,NumberOfTaskProcessed";			
-		TraceFile.insertData("Task.csv", data);
+				+ ",NumberOfAwayTaskDueToCapacity,NumberOfTaskProcessed";		
+		TraceFile.insertData("Task_"+numAv+"_AV.csv", data);
+		
 		
 		/**
 		 * Initialization of the trace file for latency
 		 * */
 		data="taskDelay,wanDelay,manDelay,wlanDelay,lanDelay";
-		TraceFile.insertData("Latency.csv", data);
+		TraceFile.insertData("Latency_"+numAv+"_AV.csv", data);
 		/**
 		 * Initialization of the trace file for Computing resource
 		 * */

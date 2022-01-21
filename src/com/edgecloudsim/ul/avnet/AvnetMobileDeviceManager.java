@@ -135,11 +135,18 @@ public class AvnetMobileDeviceManager extends MobileDeviceManager {
 			
 			double taskDelay=mecServer.mecSDNController(task);
 			
+			String data1=mecServer.getNumberOfTasks()+","+mecServer.getNumOfTaskProcessedInternaly()+","
+					+mecServer.getNumOfTaskProcessedAwayDueToAvPosition()+","+mecServer.getNumOfTaskProcessedAwayDueToCapacity()
+					+","+mecServer.getNumOfTaskAlreadyProcessed();
+			int numAv=SimSettings.getInstance().getMaxNumOfMobileDev();
+			TraceFile.insertData("Task_"+numAv+"_AV.csv", data1);
 			
 			//Delay Management
-			String data=taskDelay+","+AvnetEdgeServer.wanDelay+","+AvnetEdgeServer.manDelay+","+AvnetEdgeServer.wlanDelay
-					+","+AvnetEdgeServer.lanDelay;
-			TraceFile.insertData("Latency.csv", data);
+			String data=taskDelay+","+mecServer.getWanDelay()+","+mecServer.getManDelay()+","+mecServer.getWlanDelay()
+					+","+mecServer.getLanDelay();
+			
+			//int numAv=SimSettings.getInstance().getMaxNumOfMobileDev();
+			TraceFile.insertData("Latency_"+numAv+"_AV.csv", data);
 			
 
 			submitTaskToVm(task, 0, SimSettings.GENERIC_EDGE_DEVICE_ID);

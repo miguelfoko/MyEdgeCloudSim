@@ -247,10 +247,12 @@ public class AvnetCoreSimulation extends SimEntity {
 				break;
 			case STOP_SIMULATION:
 				//Number of tasks
-				String data=AvnetEdgeServer.numberOfTasks+","+AvnetEdgeServer.numOfTaskProcessedInternaly+","
-						+AvnetEdgeServer.numOfTaskProcessedAwayDueToAvPosition+","+AvnetEdgeServer.numOfTaskProcessedAwayDueToCapacity
-						+","+AvnetEdgeServer.numOfTaskAlreadyProcessed;
-				TraceFile.insertData("Task.csv", data);
+//				AvnetEdgeServer mecServer=new AvnetEdgeServer();
+//				String data=mecServer.numberOfTasks+","+mecServer.numOfTaskProcessedInternaly+","
+//						+mecServer.numOfTaskProcessedAwayDueToAvPosition+","+mecServer.numOfTaskProcessedAwayDueToCapacity
+//						+","+mecServer.numOfTaskAlreadyProcessed;
+//				int numAv=SimSettings.getInstance().getMaxNumOfMobileDev();
+//				TraceFile.insertData("Task_"+numAv+"_AV.csv", data);
 				
 				CloudSim.terminateSimulation();
 				
