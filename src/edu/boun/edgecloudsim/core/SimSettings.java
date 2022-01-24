@@ -102,6 +102,7 @@ public class SimSettings {
 	private int LAMBDA;
 
 	private double WAN_PROPAGATION_DELAY; //seconds unit in properties file
+	private double DIRECT_COMMUNICATION_DELAY;
 	private double MAN_PROPAGATION_DELAY; //seconds unit in properties file
 	private double WLAN_PROPAGATION_DELAY; //seconds unit in properties file
 	private double GSM_PROPAGATION_DELAY; //seconds unit in properties file
@@ -201,6 +202,7 @@ public class SimSettings {
 			MOBILE_DEVICE_COUNTER_SIZE = Integer.parseInt(prop.getProperty("mobile_device_counter_size"));
 			WLAN_RANGE = Integer.parseInt(prop.getProperty("wlan_range", "0"));
 
+			DIRECT_COMMUNICATION_DELAY=Double.parseDouble(prop.getProperty("direct_communication_delay"));
 			WAN_PROPAGATION_DELAY = Double.parseDouble(prop.getProperty("wan_propagation_delay", "0"));
 			MAN_PROPAGATION_DELAY = Double.parseDouble(prop.getProperty("man_propagation_delay", "0"));
 			WLAN_PROPAGATION_DELAY = Double.parseDouble(prop.getProperty("wlan_propagation_delay", "0"));
@@ -505,6 +507,11 @@ public class SimSettings {
 		return NUM_OF_VM_ON_CLOUD_HOST * NUM_OF_HOST_ON_CLOUD_DATACENTER;
 	}
 
+	
+	public double getDirectCommunicationDelay() {
+		return DIRECT_COMMUNICATION_DELAY;
+	}
+
 	/**
 	 * returns the number of cores for cloud VMs
 	 */
@@ -768,6 +775,8 @@ public class SimSettings {
 	public void setTraceDirectory(String traceDirectory) {
 		TRACE_DIRECTORY = traceDirectory;
 	}
+	
+	
 
 	/**
 	 * returns application characteristic within two dimensional array

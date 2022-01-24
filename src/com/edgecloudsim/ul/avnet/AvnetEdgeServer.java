@@ -123,13 +123,25 @@ public class AvnetEdgeServer {
 		return manDelay;
 	}
 
+	
+	public void setDirectCommunicationDelay(double directCommunicationDelay) {
+		this.directCommunicationDelay = directCommunicationDelay;
+	}
+
+
+
+	public double getDirectCommunicationDelay() {
+		return directCommunicationDelay;
+	}
+
+
 	private int radius;
 	public int numberOfTasks
 	,numOfTaskProcessedInternaly
 	,numOfTaskProcessedAwayDueToCapacity
 	,numOfTaskProcessedAwayDueToAvPosition
 	,numOfTaskAlreadyProcessed;
-	public double wlanDelay,lanDelay,wanDelay,manDelay;
+	public double wlanDelay,lanDelay,wanDelay,manDelay,directCommunicationDelay;
 
 
 	
@@ -151,6 +163,7 @@ public class AvnetEdgeServer {
 		this.lanDelay = 0;
 		this.wanDelay = 0;
 		this.manDelay = 0;
+		this.directCommunicationDelay = 0;
 	}
 
 
@@ -158,7 +171,7 @@ public class AvnetEdgeServer {
 			int usedRamResources, int theta, int lambda, AV_DIRECTION orientation, int radius, int numberOfTasks,
 			int numOfTaskProcessedInternaly, int numOfTaskProcessedAwayDueToCapacity,
 			int numOfTaskProcessedAwayDueToAvPosition, int numOfTaskAlreadyProcessed, double wlanDelay, double lanDelay,
-			double wanDelay, double manDelay) {
+			double wanDelay, double manDelay, double directCommunicationDelay) {
 		super();
 		this.listOfTasks = listOfTasks;
 		this.usedComputingResources = usedComputingResources;
@@ -176,7 +189,7 @@ public class AvnetEdgeServer {
 		this.wlanDelay = wlanDelay;
 		this.lanDelay = lanDelay;
 		this.wanDelay = wanDelay;
-		this.manDelay = manDelay;
+		this.manDelay = directCommunicationDelay;
 	}
 
 
@@ -198,7 +211,7 @@ public class AvnetEdgeServer {
 		this.lanDelay = 0;
 		this.wanDelay = 0;
 		this.manDelay = 0;
-		
+		this.directCommunicationDelay = SimSettings.getInstance().getDirectCommunicationDelay();
 		boolean position=checkPosition(incomingTask);
 		if(position) {
 			

@@ -142,8 +142,8 @@ public class AvnetMobileDeviceManager extends MobileDeviceManager {
 			TraceFile.insertData("Task_"+numAv+"_AV.csv", data1);
 			
 			//Delay Management
-			String data=taskDelay+","+mecServer.getWanDelay()+","+mecServer.getManDelay()+","+mecServer.getWlanDelay()
-					+","+mecServer.getLanDelay();
+			String data=mecServer.getNumberOfTasks()+","+taskDelay+","+mecServer.getWanDelay()+","+mecServer.getManDelay()+","+mecServer.getWlanDelay()
+					+","+mecServer.getLanDelay()+","+mecServer.getDirectCommunicationDelay();
 			
 			//int numAv=SimSettings.getInstance().getMaxNumOfMobileDev();
 			TraceFile.insertData("Latency_"+numAv+"_AV.csv", data);

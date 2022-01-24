@@ -93,7 +93,7 @@ public class TraceFile {
 		/**
 		 * Initialization of the trace file for latency
 		 * */
-		data="taskDelay,wanDelay,manDelay,wlanDelay,lanDelay";
+		data="NumberOfTasks,taskDelay,wanDelay,manDelay,wlanDelay,lanDelay,directCommunicationDelay";
 		TraceFile.insertData("Latency_"+numAv+"_AV.csv", data);
 		/**
 		 * Initialization of the trace file for Computing resource
