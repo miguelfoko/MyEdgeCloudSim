@@ -134,7 +134,7 @@ public class AvnetMobileDeviceManager extends MobileDeviceManager {
 			networkModel.uploadFinished(task.getSubmittedLocation(), SimSettings.GENERIC_EDGE_DEVICE_ID);
 			
 			double taskDelay=mecServer.mecSDNController(task);
-			
+			//Task Management
 			String data1=mecServer.getNumberOfTasks()+","+mecServer.getNumOfTaskProcessedInternaly()+","
 					+mecServer.getNumOfTaskProcessedAwayDueToAvPosition()+","+mecServer.getNumOfTaskProcessedAwayDueToCapacity()
 					+","+mecServer.getNumOfTaskAlreadyProcessed();
@@ -145,8 +145,36 @@ public class AvnetMobileDeviceManager extends MobileDeviceManager {
 			String data=mecServer.getNumberOfTasks()+","+taskDelay+","+mecServer.getWanDelay()+","+mecServer.getManDelay()+","+mecServer.getWlanDelay()
 					+","+mecServer.getLanDelay()+","+mecServer.getDirectCommunicationDelay();
 			
-			//int numAv=SimSettings.getInstance().getMaxNumOfMobileDev();
+			
 			TraceFile.insertData("Latency_"+numAv+"_AV.csv", data);
+			
+			//Computing Management 
+			double test=SimSettings.getInstance().getMEC_COMPUTING_RESOURCES()
+					-mecServer.getUsedComputingResources();
+			double availableComputingRessource=(test>0)?test:0;
+			data=mecServer.getNumberOfTasks()+","+mecServer.getUsedComputingResources()+","+availableComputingRessource;
+			
+			//int numAv=SimSettings.getInstance().getMaxNumOfMobileDev();
+			TraceFile.insertData("Computing_"+numAv+"_AV.csv", data);
+			
+			//Ram Management 
+			test=SimSettings.getInstance().getMEC_RAM_RESOURCES()
+					-mecServer.getUsedRamResources();
+			double availableRamRessource=(test>0)?test:0;
+			data=mecServer.getNumberOfTasks()+","+mecServer.getUsedRamResources()+","+availableRamRessource;
+			
+			//int numAv=SimSettings.getInstance().getMaxNumOfMobileDev();
+			TraceFile.insertData("Ram_"+numAv+"_AV.csv", data);
+			
+			
+			//Storing Management 
+			test=SimSettings.getInstance().getMEC_STORING_RESOURCES()
+					-mecServer.getUsedStoringResources();
+			double availableStoringRessource=(test>0)?test:0;
+			data=mecServer.getNumberOfTasks()+","+mecServer.getUsedStoringResources()+","+availableStoringRessource;
+			
+			//int numAv=SimSettings.getInstance().getMaxNumOfMobileDev();
+			TraceFile.insertData("Storing_"+numAv+"_AV.csv", data);
 			
 
 			submitTaskToVm(task, 0, SimSettings.GENERIC_EDGE_DEVICE_ID);

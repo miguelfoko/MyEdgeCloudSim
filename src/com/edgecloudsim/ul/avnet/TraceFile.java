@@ -64,7 +64,7 @@ public class TraceFile {
 			//myWriter.close();
 			fileBW.close();
 			valRet=true;
-			AvnetSimLogger.printLine("\n\n&&&&&&&&&&&&&&&&&&&&&&& Successfully wrote to the file.");
+			//AvnetSimLogger.printLine("\n\n&&&&&&&&&&&&&&&&&&&&&&& Successfully wrote to the file.");
 		} catch (IOException e) {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
@@ -98,15 +98,18 @@ public class TraceFile {
 		/**
 		 * Initialization of the trace file for Computing resource
 		 * */
-		
+		data="NumberOfTasks,UsedComputingRessource,AvailableComputingRessource";
+		TraceFile.insertData("Computing_"+numAv+"_AV.csv", data);
 		/**
 		 * Initialization of the trace file for Storing resource
 		 * */
-		
+		data="NumberOfTasks,UsedStoringRessource,AvailableStoringRessource";
+		TraceFile.insertData("Storing_"+numAv+"_AV.csv", data);
 		/**
 		 * Initialization of the trace file for Ram resource
 		 * */
-		
+		data="NumberOfTasks,UsedRamRessource,AvailableRamRessource";
+		TraceFile.insertData("Ram_"+numAv+"_AV.csv", data);
 		/**
 		 * Initialization of the trace file for Bandwidth resource
 		 * */

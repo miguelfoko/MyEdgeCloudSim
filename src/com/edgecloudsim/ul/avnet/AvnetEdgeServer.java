@@ -16,13 +16,21 @@ public class AvnetEdgeServer {
 	
 	
 	private List<Task> listOfTasks;
-	private int usedComputingResources;
-	private int usedStoringResources;
-	private int usedRamResources;
+	private static int usedComputingResources;
+	private static int usedStoringResources;
+	private static int usedRamResources;
 	private int theta;//computing ressource needed my the mec server for internal processing
 	private int lambda;//computing ressource needed my the mec server for internal processing
 	private AV_DIRECTION orientation;//This parameter will help to direct AVs according to their direction
 	private static int[] distance;//Virtual distance between MEC severs and AVs
+	private int radius;
+	public int numberOfTasks
+	,numOfTaskProcessedInternaly
+	,numOfTaskProcessedAwayDueToCapacity
+	,numOfTaskProcessedAwayDueToAvPosition
+	,numOfTaskAlreadyProcessed;
+	public double wlanDelay,lanDelay,wanDelay,manDelay,directCommunicationDelay;
+	
 	public List<Task> getListOfTasks() {
 		return listOfTasks;
 	}
@@ -133,17 +141,6 @@ public class AvnetEdgeServer {
 	public double getDirectCommunicationDelay() {
 		return directCommunicationDelay;
 	}
-
-
-	private int radius;
-	public int numberOfTasks
-	,numOfTaskProcessedInternaly
-	,numOfTaskProcessedAwayDueToCapacity
-	,numOfTaskProcessedAwayDueToAvPosition
-	,numOfTaskAlreadyProcessed;
-	public double wlanDelay,lanDelay,wanDelay,manDelay,directCommunicationDelay;
-
-
 	
 
 	public AvnetEdgeServer() {
@@ -241,9 +238,9 @@ public class AvnetEdgeServer {
 							SimSettings.getInstance().getWAN_PROPAGATION_DELAY());
 				}else {
 					/**
-					 * Task is sent to the next MEC server of to the cloud server for processing
+					 * Task is sent to the next MEC server or to the cloud server for processing
 					 * */
-					numOfTaskProcessedAwayDueToCapacity++;
+					//numOfTaskProcessedAwayDueToCapacity++;
 					mecVNFReceiver(incomingTask);
 				}
 				/**
@@ -266,7 +263,7 @@ public class AvnetEdgeServer {
 			 * of the actual MEC server at the end of it computations if it does it
 			 * We use the internalLANDelay to materialize the changing of the MEC server (it is done by the cloud server)
 			 */
-			numOfTaskProcessedAwayDueToAvPosition++;
+			//numOfTaskProcessedAwayDueToAvPosition++;
 			mecCloudResult(incomingTask);
 			returnValue=2*SimSettings.getInstance().getWLAN_PROPAGATION_DELAY()+
 					2*SimSettings.getInstance().getMAN_PROPAGATION_DELAY()+
@@ -274,10 +271,10 @@ public class AvnetEdgeServer {
 					+4*SimSettings.getInstance().getInternalLanDelay();
 
 		}
-		this.usedComputingResources-=incomingTask.getNeededCPU();
-		this.usedStoringResources-=incomingTask.getNeededStorage();
-		this.usedRamResources-=incomingTask.getNeededRam();
-		this.listOfTasks.remove(incomingTask);
+		usedComputingResources-=incomingTask.getNeededCPU();
+		usedStoringResources-=incomingTask.getNeededStorage();
+		usedRamResources-=incomingTask.getNeededRam();
+		listOfTasks.remove(incomingTask);
 		return returnValue;
 	}
 
@@ -307,7 +304,7 @@ public class AvnetEdgeServer {
 		 * from VM4 to VM1
 		 * */
 		lanDelay+=SimSettings.getInstance().getInternalLanDelay();
-		
+		numOfTaskProcessedAwayDueToAvPosition++;
 		
 		if(checkPosition(incomingTask)) {
 			incomingTask.setAvDistanceTpMecServer(SimUtils.getRandomNumber(SimSettings.getInstance().getMIN_AV_DISTANCE_TO_MEC_SERVER(),SimSettings.getInstance().getMAX_AV_DISTANCE_TO_MEC_SERVER()));
@@ -372,6 +369,18 @@ public class AvnetEdgeServer {
 		 * 2 beacause the task arived to VM3 and go back to VM1 after processing
 		 * */
 		lanDelay+=2*SimSettings.getInstance().getInternalLanDelay();
+		usedComputingResources+=incomingTask.getNeededCPU();
+		usedRamResources+=incomingTask.getNeededRam();
+		usedStoringResources+=incomingTask.getNeededStorage();
+		
+		AvnetSimLogger.printLine("****usedComputingResources: "+usedComputingResources
+				+", Total available computingResources: "+SimSettings.getInstance().getMEC_COMPUTING_RESOURCES()
+				+"****\n usedRamResources: "+usedRamResources
+				+", Total available RamResources: "+SimSettings.getInstance().getMEC_RAM_RESOURCES()
+				+"****\n usedStoringResources: "+usedStoringResources
+				+", Total available StoringResources: "+SimSettings.getInstance().getMEC_STORING_RESOURCES()
+				);
+		
 		//wlanDelay+=2*SimSettings.getInstance().getWLAN_PROPAGATION_DELAY();
 		incomingTask.setProcess(true);
 		//AvnetSimLogger.printLine("**********************INSIDE MEC SDN CONTROLLER: Task Processing" + "***********************");
@@ -396,10 +405,10 @@ public class AvnetEdgeServer {
 		else {
 			/** Task is sent to cloud for processing*/
 			if(checkPosition(incomingTask)) {
-//				numOfTaskProcessedAwayDueToAvPosition++;
+				//numOfTaskProcessedAwayDueToAvPosition++;
 			}
 			else {
-//				numOfTaskProcessedAwayDueToCapacity++;
+				numOfTaskProcessedAwayDueToCapacity++;
 			}
 			
 		}
